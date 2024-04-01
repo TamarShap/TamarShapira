@@ -1,9 +1,5 @@
-const config = {
-
-port: 8090
-
-}
-
+NODE_ENV = development
+PORT = 8090
 
 
 module.exports = config;
