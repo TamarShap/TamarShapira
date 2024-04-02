@@ -4,7 +4,9 @@ const controller = require('../controller');
 
 
 
-router.route('/:OwnerID').get(controller.GetDogsOfOwner);
+router.route('/:OwnerID')
+.get(controller.getDogsOfOwner)
+.delete(controller.deleteDogsOfOwner);
 
 
 module.exports = router;
