@@ -3,8 +3,10 @@ const router = express.Router();
 const controller = require('../controller');
 
 router.route('/:OwnerID')
-.get(controller.getDogsOfOwner)
-.delete(controller.deleteDogsOfOwner);
+.get(controller.getOwner)
+.delete(controller.deleteOwner)
+.post(controller.updateOwner)
+    
 
 
 module.exports = router;
