@@ -1,4 +1,4 @@
-const config = require('./dbconfig');
+const config = require('../dbconfig');
 const sql = require('mssql');
 
 async function getDogsOfOwner(OwnerID) {
@@ -11,7 +11,6 @@ async function getDogsOfOwner(OwnerID) {
         return dogs.recordset;
     }
     catch (error) {
-        console.log(error);
         throw error;
     }
 }
@@ -26,7 +25,6 @@ async function deleteDogsOfOwner(OwnerID) {
         return dogs.returnValue;
     }
     catch (error) {
-        console.log(error)
         throw error;
     }
 }
@@ -42,8 +40,7 @@ async function getOwner(OwnerID) {
         return owner.recordset;
     }
     catch (error) {
-        console.log(error)
-        throw error;;
+        throw error;
     }
 }
 
@@ -55,13 +52,13 @@ async function deleteOwner(ownerID) {
             .input('OwnerID', sql.VarChar(10), ownerID)
             .execute('sp_DeleteDogsOfOwner');
 
-        await pool.request()
+        let returnValue = await pool.request()
             .input('OwnerID', sql.VarChar(10), ownerID)
             .execute('sp_DeleteOwner');
 
+        return returnValue.returnValue;
     }
     catch (error) {
-        console.log(error)
         throw error;
     }
 }
@@ -77,16 +74,54 @@ async function updateOwner(ownerID, newAddress, newPhoneNumber) {
             .input('NewNumber', sql.VarChar(10), newPhoneNumber)
             .execute('sp_UpdateOwner');
 
-        return owner.recordset;
+        return owner.returnValue;
 
     }
     catch (error) {
-        console.log(error)
         throw error;
     }
 }
 
 
+async function addOwner(ownerID, name, Address, PhoneNumber) {
+    try {
+        let pool = await sql.connect(config);
+
+        let owner = await pool.request()
+            .input('OwnerID', sql.VarChar(10), ownerID)
+            .input('Name', sql.VarChar(10), name)
+            .input('Address', sql.VarChar(10), Address)
+            .input('PhoneNumber', sql.VarChar(10), PhoneNumber)
+            .execute('sp_AddDogOwner');
+
+        return owner.recordset;
+
+    }
+    catch (error) {
+        throw error;
+    }
+}
+
+
+async function registerUser(name, email, role, password) {
+    try {
+        let pool = await sql.connect(config);
+
+        let user = await pool.request()
+            .input('Email', sql.VarChar(10), email)
+            .input('Name', sql.VarChar(10), name)
+            .input('Role', sql.VarChar(10), role)
+            .input('Password', sql.VarChar(50), password)
+            .input('CreatedAt', sql.VarChar(10), Date.now())
+            .execute('sp_RegisterUser');
+
+        return user.recordset;
+
+    }
+    catch (error) {
+        throw error;
+    }
+}
 
 
 module.exports = {
@@ -94,5 +129,6 @@ module.exports = {
     deleteDogsOfOwner,
     getOwner,
     deleteOwner,
-    updateOwner
+    updateOwner,
+    addOwner,
   }

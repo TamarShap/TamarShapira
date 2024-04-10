@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controller');
+const controller = require('../Controllers/owner');
 
 router.route('/:OwnerID')
 .get(controller.getDogsOfOwner)

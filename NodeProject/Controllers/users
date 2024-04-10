@@ -1,0 +1,20 @@
+const  Db = require('../dboperations/users');
+const ErrorResponse = require('../utils/errorResponse');
+
+
+async function registerUser (req, res, next) {
+    const name = req.body.name;
+    const role = req.body.Role;
+    const email = req.body.Email;
+    const password = req.body.Password;
+
+    try {
+      await Db.registerUser(name,email, role, password);
+      res
+        .status(200)
+        .json({msg: `registered user`});
+    } catch (err) {
+      next(err);
+    }
+
+  }

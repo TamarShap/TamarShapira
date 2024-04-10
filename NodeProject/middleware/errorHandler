@@ -1,0 +1,31 @@
+const sql = require('mssql');
+
+
+const errorHandler = (err, req, res, next) => {
+    
+    if (err.name === 'ConnectionError' instanceof sql.RequestError) {
+        console.error(`${err.name} : ${err.message}`);
+        res.status(404).json({ error: 'Bad Request' });
+
+    } else if (err instanceof sql.ConnectionError) {
+        console.error(`${err.name} : ${err.message}`);
+        res.status(500).json({ error: 'Internal Server Error' });
+
+    } else if (err instanceof sql.PreparedStatementError) {
+        console.error(`${err.name} : ${err.message}`);
+        res.status(500).json({ error: 'Internal Server Error' }); 
+
+    } else if (err instanceof sql.TransactionError) {
+        console.error(`${err.name} : ${err.message}`);
+        res.status(500).json({ error: 'Internal Server Error' }); 
+        return;
+    }
+    
+    console.error(err.stack);
+    res.status(err.statusCode || 500 ).json({
+        name: err.name,
+        error: err.message });
+};
+
+
+module.exports = errorHandler;
